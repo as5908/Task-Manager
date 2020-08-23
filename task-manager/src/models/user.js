@@ -3,53 +3,58 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("Email is invalid");
-      }
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    trim: true,
-    lowercase: true,
-    unique: true,
-  },
-  age: {
-    type: Number,
-    validate(value) {
-      if (value < 0) {
-        throw new Error("Age must be positive");
-      }
+    email: {
+      type: String,
+      required: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Email is invalid");
+        }
+      },
+      trim: true,
+      lowercase: true,
+      unique: true,
     },
-    default: 0,
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 7,
-    trim: true,
-    validate(value) {
-      if (value.toLowerCase().includes("password")) {
-        throw new Error("Password cannot contain 'password'");
-      }
+    age: {
+      type: Number,
+      validate(value) {
+        if (value < 0) {
+          throw new Error("Age must be positive");
+        }
+      },
+      default: 0,
     },
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    password: {
+      type: String,
+      required: true,
+      minlength: 7,
+      trim: true,
+      validate(value) {
+        if (value.toLowerCase().includes("password")) {
+          throw new Error("Password cannot contain 'password'");
+        }
       },
     },
-  ],
-});
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // Virtual property
 userSchema.virtual("tasks", {
